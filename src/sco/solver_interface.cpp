@@ -129,10 +129,14 @@ ModelPtr createModel() {
 #ifdef HAVE_BPMPD
   extern ModelPtr createBPMPDModel();
 #endif
+#ifdef HAVE_OSQP
+  extern ModelPtr createOSQPModel();
+#endif
   
   enum ConvexSolver {    
     GUROBI, 
     BPMPD,
+    OSQP,
     INVALID
   };
   
@@ -145,6 +149,7 @@ ModelPtr createModel() {
   if (solver_env) {
     if (string(solver_env) == "GUROBI") solver = GUROBI;
     else if (string(solver_env) == "BPMPD") solver = BPMPD;
+    else if (string(solver_env) == "OSQP") solver = OSQP;
     else PRINT_AND_THROW( boost::format("invalid solver \"%s\"specified by TRAJOPT_CONVEX_SOLVER")%solver_env);
 #ifndef HAVE_GUROBI
     if (solver == GUROBI) PRINT_AND_THROW("you didn't build with GUROBI support");
@@ -152,14 +157,19 @@ ModelPtr createModel() {
 #ifndef HAVE_BPMPD
     if (solver == BPMPD) PRINT_AND_THROW("you don't have BPMPD support on this platform");
 #endif
+#ifndef HAVE_OSQP
+    if (solver == OSQP) PRINT_AND_THROW("you didn't build with OSQP support");
+#endif
     
   }
   else {
 #ifdef HAVE_GUROBI
   solver = GUROBI;
+#elif HAVE_OSQP
+  solver = OSQP;
 #else
   solver = BPMPD;
-#endif    
+#endif
   }
 
 #ifdef HAVE_GUROBI
@@ -167,6 +177,9 @@ ModelPtr createModel() {
 #endif
 #ifdef HAVE_BPMPD
   if (solver == BPMPD) return createBPMPDModel();
+#endif
+#ifdef HAVE_OSQP
+  if (solver == OSQP) return createOSQPModel();
 #endif
   PRINT_AND_THROW("Failed to create solver");
   return ModelPtr();

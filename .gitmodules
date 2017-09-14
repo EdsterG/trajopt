@@ -1,0 +1,3 @@
+[submodule "ext/osqp"]
+	path = ext/osqp
+	url = https://github.com/EdsterG/osqp.git

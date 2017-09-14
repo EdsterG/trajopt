@@ -36,13 +36,19 @@ if (HAVE_BPMPD)
   set_property(SOURCE bpmpd_caller.cpp APPEND PROPERTY COMPILE_DEFINITIONS BPMPD_WORKING_DIR="${BPMPD_WORKING_DIR}")
   file(COPY bpmpd.par ${CMAKE_CURRENT_SOURCE_DIR} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-  set_property(SOURCE solver_interface.cpp APPEND PROPERTY COMPILE_DEFINITIONS HAVE_BPMPD )
+  set_property(SOURCE solver_interface.cpp APPEND PROPERTY COMPILE_DEFINITIONS HAVE_BPMPD)
 endif()
 
 if (GUROBI_FOUND)
-  set_property(SOURCE solver_interface.cpp APPEND PROPERTY COMPILE_DEFINITIONS HAVE_GUROBI )
+  set_property(SOURCE solver_interface.cpp APPEND PROPERTY COMPILE_DEFINITIONS HAVE_GUROBI)
   list(APPEND SCO_SOURCE_FILES gurobi_interface.cpp)
 endif(GUROBI_FOUND)
+
+if (OSQP_FOUND)
+  set_property(SOURCE solver_interface.cpp APPEND PROPERTY COMPILE_DEFINITIONS HAVE_OSQP)
+  list(APPEND SCO_SOURCE_FILES osqp_interface.cpp)
+endif()
+
 
 add_library(sco
   ${SCO_SOURCE_FILES}
@@ -50,12 +56,16 @@ add_library(sco
 
 
 set (SCO_LINK_LIBS utils)
-if (GUROBI_FOUND)  
+if (GUROBI_FOUND)
   list(APPEND SCO_LINK_LIBS ${GUROBI_LIBRARIES}) 
 endif()
-if (HAVE_BPMPD) 
+if (HAVE_BPMPD)
   list(APPEND SCO_LINK_LIBS ${BPMPD_LIBRARY})
 endif()
+if (OSQP_FOUND)
+  list(APPEND SCO_LINK_LIBS ${OSQP_LIBRARIES})
+endif()
+
 
 target_link_libraries(sco ${SCO_LINK_LIBS})
 

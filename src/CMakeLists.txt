@@ -22,6 +22,10 @@ else()
   include_directories(${GUROBI_INCLUDE_DIRS})
 endif()
 
+include_directories(${OSQP_INCLUDE_DIRS})
+set(OSQP_LIBRARIES osqpdirstatic)
+set(OSQP_FOUND 1)
+
 set(OpenRAVE_BOTH_LIBRARIES ${OpenRAVE_LIBRARIES} ${OpenRAVE_CORE_LIBRARIES})
 
 add_subdirectory(sco)

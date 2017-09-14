@@ -35,6 +35,7 @@ set(BULLET_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/ext/bullet/src)
 set(BULLET_LIBRARIES BulletCollision LinearMath)
 set(GTEST_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/ext/gtest/include)
 set(JSON_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/ext/json/include)
+set(OSQP_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/ext/osqp/include)
 set(HACD_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/ext/HACD_Lib/inc ${CMAKE_SOURCE_DIR}/ext/HACD_Lib/src)
 
 enable_testing()

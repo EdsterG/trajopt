@@ -1,6 +1,7 @@
 #add_subdirectory(bullet)
 add_subdirectory(gtest)
 add_subdirectory(json)
+set(DLONG OFF CACHE BOOL "Build OSQP without long integers for indexing")
 add_subdirectory(osqp)
 if (BUILD_HUMANOIDS)
   #add_subdirectory(rbdl)

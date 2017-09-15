@@ -220,6 +220,8 @@ CvxOptStatus OSQPModel::optimize() {
 
     // Define Solver settings as default
     set_default_settings(settings);
+    settings->rho = 1e-3;
+    settings->max_iter = 10000;
 
     // Setup workspace
     work = osqp_setup(data, settings);

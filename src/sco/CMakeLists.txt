@@ -49,6 +49,11 @@ if (OSQP_FOUND)
   list(APPEND SCO_SOURCE_FILES osqp_interface.cpp)
 endif()
 
+if (QPOASES_FOUND)
+    set_property(SOURCE solver_interface.cpp APPEND PROPERTY COMPILE_DEFINITIONS HAVE_QPOASES)
+    list(APPEND SCO_SOURCE_FILES qpoases_interface.cpp)
+endif()
+
 
 add_library(sco
   ${SCO_SOURCE_FILES}
@@ -64,6 +69,9 @@ if (HAVE_BPMPD)
 endif()
 if (OSQP_FOUND)
   list(APPEND SCO_LINK_LIBS ${OSQP_LIBRARIES})
+endif()
+if (QPOASES_FOUND)
+    list(APPEND SCO_LINK_LIBS ${QPOASES_LIBRARIES})
 endif()
 
 

@@ -26,6 +26,10 @@ include_directories(${OSQP_INCLUDE_DIRS})
 set(OSQP_LIBRARIES osqpdirstatic)
 set(OSQP_FOUND 1)
 
+include_directories(${QPOASES_INCLUDE_DIRS})
+set(QPOASES_LIBRARIES qpOASES)
+set(QPOASES_FOUND 1)
+
 set(OpenRAVE_BOTH_LIBRARIES ${OpenRAVE_LIBRARIES} ${OpenRAVE_CORE_LIBRARIES})
 
 add_subdirectory(sco)

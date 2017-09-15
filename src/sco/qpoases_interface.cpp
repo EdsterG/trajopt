@@ -130,6 +130,7 @@ CvxOptStatus QPOASESModel::optimize() {
     int n = m_vars.size();
     int m = m_cnts.size();
 
+    // TODO: use the sparse interface in qpOASES, dense matrices too slow for larger problems
     vector<double> H(n*n,0), A(n*m,0), g(n,0), lb(n), ub(n), lbA(m), ubA(m);
 
     for (int iVar=0; iVar < n; ++iVar) {
@@ -169,9 +170,8 @@ CvxOptStatus QPOASESModel::optimize() {
 
     /* Solve first QP. */
     int_t nWSR = 2500; // Max num work space reconstructions
+    // TODO: reuse env between calls to the solver
     env.init(H.data(),g.data(),A.data(),lb.data(),ub.data(),lbA.data(),ubA.data(), nWSR);
-
-    /* Get and print solution of first QP. */
 
     if (env.isSolved()){
         m_soln = vector<double>(n);

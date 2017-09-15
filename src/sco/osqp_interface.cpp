@@ -229,8 +229,15 @@ CvxOptStatus OSQPModel::optimize() {
     // Solve Problem
     osqp_solve(work);
 
-    m_soln = vector<double>(work->solution->x, work->solution->x+n);
-    int retcode = work->info->status_val;
+    CvxOptStatus retcode;
+    if (work->info->status_val == OSQP_SOLVED){
+        retcode = CVX_SOLVED;
+        m_soln = vector<double>(work->solution->x, work->solution->x+n);
+        LOG_DEBUG("solver objective value: %.3e", m_objective.value(m_soln));
+    }
+    else if (work->info->status_val == OSQP_PRIMAL_INFEASIBLE ||
+             work->info->status_val == OSQP_DUAL_INFEASIBLE) retcode = CVX_INFEASIBLE;
+    else retcode = CVX_FAILED;
 
     // Cleanup
     osqp_cleanup(work);
@@ -239,9 +246,7 @@ CvxOptStatus OSQPModel::optimize() {
     c_free(data);
     c_free(settings);
 
-    if (retcode == OSQP_SOLVED) return CVX_SOLVED;
-    else if (retcode==OSQP_PRIMAL_INFEASIBLE || retcode ==OSQP_DUAL_INFEASIBLE) return CVX_INFEASIBLE;
-    else return CVX_FAILED;
+    return retcode;
 }
 
 }

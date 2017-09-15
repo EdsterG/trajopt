@@ -172,10 +172,13 @@ CvxOptStatus QPOASESModel::optimize() {
     env.init(H.data(),g.data(),A.data(),lb.data(),ub.data(),lbA.data(),ubA.data(), nWSR);
 
     /* Get and print solution of first QP. */
-    m_soln = vector<double>(n);
-    env.getPrimalSolution(m_soln.data());
 
-    if (env.isSolved()) return CVX_SOLVED;
+    if (env.isSolved()){
+        m_soln = vector<double>(n);
+        env.getPrimalSolution(m_soln.data());
+        LOG_DEBUG("solver objective value: %.3e", m_objective.value(m_soln));
+        return CVX_SOLVED;
+    }
     else if (env.isInfeasible()) return CVX_INFEASIBLE;
     else return CVX_FAILED;
 }

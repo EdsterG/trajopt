@@ -458,12 +458,13 @@ CvxOptStatus BPMPDModel::optimize() {
 
    bpmpd_output bo;
    ser(gPipeOut, bo, DESER);
-   
-   m_soln = vector<double>(bo.primal.begin(), bo.primal.begin()+n);
-   int retcode = bo.code;
 
-  if (retcode == 2) return CVX_SOLVED;
-  else if (retcode==3 || retcode ==4) return CVX_INFEASIBLE;
+  if (bo.code == 2){
+    m_soln = vector<double>(bo.primal.begin(), bo.primal.begin()+n);
+    LOG_DEBUG("solver objective value: %.3e", m_objective.value(m_soln));
+    return CVX_SOLVED;
+  }
+  else if (bo.code==3 || bo.code ==4) return CVX_INFEASIBLE;
   else return CVX_FAILED;
   
 #endif

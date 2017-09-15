@@ -130,12 +130,12 @@ CvxOptStatus OSQPModel::optimize() {
     int n = m_vars.size();
     int m = m_cnts.size();
 
-    vector<int> P_i, P_p(n+1), A_i, A_p(m+1);
+    vector<int> P_i, P_p(n+1), A_i, A_p(n+1);
     vector<double> P_x, q(n,0), A_x, lbound(m+n), ubound(m+n);
 
     for (int iVar=0; iVar < n; ++iVar) {
-        lbound[iVar] = fmax(m_lbs[iVar], -OSQP_BIG);
-        ubound[iVar] = fmin(m_ubs[iVar], OSQP_BIG);
+        lbound[m+iVar] = fmax(m_lbs[iVar], -OSQP_BIG);
+        ubound[m+iVar] = fmin(m_ubs[iVar], OSQP_BIG);
     }
 
     vector< vector<int> > var2cntinds(n);
@@ -150,8 +150,8 @@ CvxOptStatus OSQPModel::optimize() {
             var2cntvals[inds[i]].push_back(aff.coeffs[i]); // xxx maybe repeated/
         }
 
-        lbound[n+iCnt] = (m_cntTypes[iCnt] == INEQ) ? -OSQP_BIG : -aff.constant;
-        ubound[n+iCnt] = -aff.constant;
+        lbound[iCnt] = (m_cntTypes[iCnt] == INEQ) ? -OSQP_BIG : -aff.constant;
+        ubound[iCnt] = -aff.constant;
 
     }
 
@@ -165,6 +165,10 @@ CvxOptStatus OSQPModel::optimize() {
         A_p[iVar] = A_x.size();
         A_x.insert(A_x.end(), var2cntvals[iVar].begin(), var2cntvals[iVar].end());
         A_i.insert(A_i.end(), var2cntinds[iVar].begin(), var2cntinds[iVar].end());
+
+        // Add individual variable to A to apply lower and upper bounds
+         A_x.push_back(1);
+         A_i.push_back(m+iVar);
     }
     A_p[n] = A_x.size();
 
@@ -174,10 +178,8 @@ CvxOptStatus OSQPModel::optimize() {
         int idx1 = m_objective.vars1[i].var_rep->index, idx2 = m_objective.vars2[i].var_rep->index;
         var2qinds[idx1].push_back(idx2);
         var2qcoeffs[idx1].push_back(m_objective.coeffs[i]);
-        if (idx1 != idx2) {
-            var2qinds[idx2].push_back(idx1);
-            var2qcoeffs[idx2].push_back(m_objective.coeffs[i]);
-        }
+        var2qinds[idx2].push_back(idx1);
+        var2qcoeffs[idx2].push_back(m_objective.coeffs[i]);
     }
 
     for (int iVar=0; iVar < n; ++iVar) {
@@ -218,7 +220,6 @@ CvxOptStatus OSQPModel::optimize() {
 
     // Define Solver settings as default
     set_default_settings(settings);
-    //settings->alpha = 1.0; // Change alpha parameter
 
     // Setup workspace
     work = osqp_setup(data, settings);

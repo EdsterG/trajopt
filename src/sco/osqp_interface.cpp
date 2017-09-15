@@ -210,7 +210,7 @@ CvxOptStatus OSQPModel::optimize() {
     // Populate data
     data = (OSQPData *)c_malloc(sizeof(OSQPData));
     data->n = n;
-    data->m = m;
+    data->m = m+n;
     data->P = csc_matrix(data->n, data->n, P_x.size(), P_x.data(), P_i.data(), P_p.data());
     data->q = q.data();
     data->A = csc_matrix(data->m, data->n, A_x.size(), A_x.data(), A_i.data(), A_p.data());

@@ -3,6 +3,7 @@ add_subdirectory(gtest)
 add_subdirectory(json)
 set(DLONG OFF CACHE BOOL "Build OSQP without long integers for indexing")
 add_subdirectory(osqp)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)  # -fPIC, otherwise building with qpOASES fails
 add_subdirectory(qpOASES)
 if (BUILD_HUMANOIDS)
   #add_subdirectory(rbdl)

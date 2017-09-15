@@ -142,7 +142,7 @@ CvxOptStatus QPOASESModel::optimize() {
         vector<int> inds = vars2inds(aff.vars);
 
         for (int i=0; i < aff.vars.size(); ++i) {
-            A[iCnt * m + inds[i]] += aff.coeffs[i];
+            A[iCnt * n + inds[i]] += aff.coeffs[i];
         }
 
         lbA[iCnt] = (m_cntTypes[iCnt] == INEQ) ? -QPOASES_BIG : -aff.constant;
@@ -168,7 +168,7 @@ CvxOptStatus QPOASESModel::optimize() {
     env.setOptions(options);
 
     /* Solve first QP. */
-    int_t nWSR = 10; // Max allowed CPU time
+    int_t nWSR = 2500; // Max num work space reconstructions
     env.init(H.data(),g.data(),A.data(),lb.data(),ub.data(),lbA.data(),ubA.data(), nWSR);
 
     /* Get and print solution of first QP. */

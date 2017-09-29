@@ -23,8 +23,8 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 find_package(Eigen REQUIRED)
-find_package(Boost COMPONENTS system python thread program_options REQUIRED)
 find_package(OpenRAVE REQUIRED)
+find_package(Boost COMPONENTS system thread program_options REQUIRED)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)

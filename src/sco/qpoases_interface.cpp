@@ -166,6 +166,9 @@ CvxOptStatus QPOASESModel::optimize() {
     QProblem env(n,m);
 
     Options options;
+    if (util::GetLogLevel() < util::LevelDebug) {
+        options.printLevel = PL_NONE;
+    }
     env.setOptions(options);
 
     /* Solve first QP. */

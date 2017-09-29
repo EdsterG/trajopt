@@ -222,6 +222,9 @@ CvxOptStatus OSQPModel::optimize() {
     set_default_settings(settings);
     settings->rho = 1e-3;
     settings->max_iter = 10000;
+    if (util::GetLogLevel() < util::LevelDebug) {
+        settings->verbose = 0;
+    }
 
     // Setup workspace
     work = osqp_setup(data, settings);

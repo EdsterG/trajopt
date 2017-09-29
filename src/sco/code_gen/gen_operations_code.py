@@ -45,8 +45,8 @@ inline QuadExpr operator+(const QuadExpr& x, const QuadExpr& y) {
 subtraction_overloads = addition_overloads.replace("operator+", "operator-").replace("exprAdd","exprSub")
 
 def print_overloads():
-    print addition_overloads
-    print subtraction_overloads
+    print(addition_overloads)
+    print(subtraction_overloads)
     
 addition_funcs = """
 
@@ -84,10 +84,10 @@ inline QuadExpr exprAdd(QuadExpr a, const QuadExpr& b) {
 subtraction_funcs = addition_funcs.replace("Add", "Sub").replace("Inc","Dec")
 
 def print_funcs():
-    print addition_funcs
-    print subtraction_funcs
+    print(addition_funcs)
+    print(subtraction_funcs)
     
     
 print_overloads()
-print "///////////////"
+print("///////////////")
 print_funcs()

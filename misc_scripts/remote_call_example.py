@@ -1,3 +1,4 @@
+from __future__ import print_function
 import xmlrpclib, json, time
 
 server = xmlrpclib.ServerProxy('http://localhost:9000')
@@ -50,5 +51,5 @@ request = {
 for i in xrange(10): 
     t_start = time.time()
     response = server.solve_problem(sesh_key, json.dumps(request))
-    print "round trip time:", time.time() - t_start
-    print "solve time:", response["solve_time"]
+    print("round trip time:", time.time() - t_start)
+    print("solve time:", response["solve_time"])

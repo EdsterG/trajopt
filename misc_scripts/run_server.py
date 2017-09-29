@@ -1,3 +1,4 @@
+from __future__ import print_function
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("keyfile", help="file with list of valid authentication keys")
@@ -6,7 +7,7 @@ args = parser.parse_args()
 with open(args.keyfile) as fh:
     AUTH_KEYS = [line.strip() for line in fh.readlines()]
     AUTH_KEYS = filter(None, AUTH_KEYS)
-    print "valid keys:", AUTH_KEYS
+    print("valid keys:", AUTH_KEYS)
 
 
 
@@ -81,7 +82,7 @@ class TrajoptManager(object):
             for (seshname, seshdata) in self.sesh2data.items():
                 t_now = time.time()
                 if t_now - seshdata["last_used"] > MAX_IDLE_TIME:
-                    print "deleting idle session %s"%seshname
+                    print("deleting idle session %s"%seshname)
                     seshdata["env"].Destroy()
                     del self.sesh2data[seshname]                
             time.sleep(CLEANUP_PERIOD)
@@ -96,11 +97,11 @@ def main():
     cleanup_thread = threading.Thread(target = manager._cleanup_loop)
     cleanup_thread.start()
     try:
-        print 'Use Control-C to exit'
+        print('Use Control-C to exit')
         server.serve_forever()
     except KeyboardInterrupt:
         manager.done = True
         cleanup_thread.join()
-        print 'Exiting'
+        print('Exiting')
         
 main()

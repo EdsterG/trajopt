@@ -84,7 +84,7 @@ if args.position_only: request["constraints"][0]["params"]["rot_coeffs"] = [0,0,
 s = json.dumps(request) # convert dictionary into json-formatted string
 prob = trajoptpy.ConstructProblem(s, env) # create object that stores optimization problem
 result = trajoptpy.OptimizeProblem(prob) # do optimization
-print result
+print(result)
 
 from trajoptpy.check_traj import traj_is_safe
 prob.SetRobotActiveDOFs() # set robot DOFs to DOFs in optimization problem

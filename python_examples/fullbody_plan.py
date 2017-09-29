@@ -92,9 +92,9 @@ def main():
 
     success = traj_is_safe(traj, robot)
     if success:
-        print "trajectory is safe! :)"
+        print("trajectory is safe! :)")
     else:
-        print "trajectory contains a collision :("
+        print("trajectory contains a collision :(")
     
     if args.interactive: animate_traj(traj, robot)
     

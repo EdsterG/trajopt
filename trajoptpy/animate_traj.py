@@ -5,7 +5,7 @@ def animate_traj(traj, robot, pause=True, restore=True):
     if restore: _saver = openravepy.RobotStateSaver(robot)
     viewer = trajoptpy.GetViewer(robot.GetEnv())
     for (i,dofs) in enumerate(traj):
-        print "step %i/%i"%(i+1,len(traj))
+        print("step %i/%i"%(i+1,len(traj)))
         robot.SetActiveDOFValues(dofs)
         if pause: viewer.Idle()
         else: viewer.Step()

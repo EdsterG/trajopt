@@ -134,16 +134,16 @@ def full_body_drive_and_reach(link_name, xyz_targ, quat_targ):
     return request
 
 def check_result(result, robot):
-    print "checking trajectory for safety and constraint satisfaction..."
+    print("checking trajectory for safety and constraint satisfaction...")
     success = True    
     if not traj_is_safe(result.GetTraj(), robot):
         success = False
-        print "trajectory has a collision!"
+        print("trajectory has a collision!")
     abstol = 1e-3
     for (name, val) in result.GetConstraints():
         if (val > abstol):
             success = False
-            print "constraint %s wasn't satisfied (%.2e > %.2e)"%(name, val, abstol)
+            print("constraint %s wasn't satisfied (%.2e > %.2e)"%(name, val, abstol))
     return success
         
 
@@ -157,6 +157,6 @@ trajoptpy.SetInteractive(args.interactive)
 prob = trajoptpy.ConstructProblem(s, env)
 result = trajoptpy.OptimizeProblem(prob)
 if check_result(result, robot):
-    print "success!"
+    print("success!")
 else:
-    print "fail :("
+    print("fail :(")

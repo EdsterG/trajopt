@@ -1,3 +1,4 @@
+from __future__ import print_statement
 import trajoptpy
 import openravepy as rave
 import numpy as np
@@ -53,16 +54,16 @@ def move_arm_straight_request(manip, n_steps, link_name, xyz_start, xyz_end, qua
         return 100*robot.GetEnv().CheckCollision(robot)                
     paths, costs, timesteps = ku.traj_cart2joint(hmats, ikfunc, start_joints=start_joints, nodecost=nodecost)
     i_best = np.argmin(costs)
-    print "lowest cost of initial trajs:", costs[i_best]
+    print("lowest cost of initial trajs:", costs[i_best])
     if len(timesteps) < n_steps:
-        print "timesteps with soln: ", timesteps
-        print "linearly interpolating the rest"
+        print("timesteps with soln: ", timesteps)
+        print("linearly interpolating the rest")
         path_init = mu.interp2d(np.arange(n_steps), timesteps, paths[i_best])
     else:
-        print "all timesteps have an ik solution"
+        print("all timesteps have an ik solution")
         path_init = paths[i_best]
     for i in xrange(1, n_steps-1):
-        print "waypoint xyz", xyzs[i]
+        print("waypoint xyz", xyzs[i])
         waypoint_term = {
             "type" : "pose",
             "name" : "waypoint_pose",
@@ -116,7 +117,7 @@ def main():
         xyz_start=xyz_start, xyz_end=XYZ_TARGET, quat_start=quat_start, quat_end=QUAT_TARGET,
         start_joints = robot.GetDOFValues(manip.GetArmJoints()))
     s = json.dumps(request)
-    print "REQUEST:",s
+    print("REQUEST:",s)
     trajoptpy.SetInteractive(INTERACTIVE);
     prob = trajoptpy.ConstructProblem(s, env)
     result = trajoptpy.OptimizeProblem(prob)

@@ -72,16 +72,16 @@ if __name__ == "__main__":
     robot.SetActiveDOFValues(np.zeros(robot.GetActiveDOF()))
 
     basemanip = rave.interfaces.BaseManipulation(robot)
-    print "starting RRT planning..."
+    print("starting RRT planning...")
     traj=basemanip.MoveActiveJoints(goal=[0.609648, 1.37131, 1.6, -1.05298, -1.41295, -0.979627, 0.93925], 
                                     outputtrajobj=True,execute=False)    
-    print "RRT done"
+    print("RRT done")
     if traj.GetNumWaypoints() == 0:
         raise Exception("planner couldn't find a path")
     ##################
     request = smooth_traj_request(robot, traj)
     s = json.dumps(request)
-    print json.dumps(request, indent=1)
+    print(json.dumps(request, indent=1))
     trajoptpy.SetInteractive(args.interactive);
     prob = trajoptpy.ConstructProblem(s, env)
     result = trajoptpy.OptimizeProblem(prob)

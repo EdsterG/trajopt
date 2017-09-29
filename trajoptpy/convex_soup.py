@@ -15,7 +15,7 @@ def calc_hull(points):
                 delaunay = scipy.spatial.Delaunay(pertpts)
                 return delaunay.points, delaunay.convex_hull
             except Exception:
-                print "qhull error, returning"
+                print("qhull error, returning")
                 return None,None
 
 def create_convex_soup(cloud, env, name = "convexsoup"):
@@ -28,7 +28,7 @@ def create_convex_soup(cloud, env, name = "convexsoup"):
         origpts = xyz[inds]
         hullpoints, hullinds = calc_hull(origpts)
         if hullpoints is None: 
-            print "failed to get convex hull!"
+            print("failed to get convex hull!")
             continue
             
             

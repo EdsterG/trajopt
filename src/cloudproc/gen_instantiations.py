@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import re
-print "generating template instantiations"
+print("generating template instantiations")
 with open("cloudproc.hpp","r") as infile:
     with open("autogen_instantiations.cpp","w") as outfile:
         while True:

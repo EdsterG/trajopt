@@ -1,3 +1,4 @@
+from __future__ import print_function
 import humanoidspy
 import trajoptpy
 import openravepy as rave
@@ -238,7 +239,7 @@ def press_button_request(robot, hand_xyz, hand_link, foot_links, n_steps):
     
 def animate_traj(viewer, robot, traj):
     for (i,row) in enumerate(traj):
-        print "step",i
+        print("step",i)
         robot.SetActiveDOFValues(row)
         viewer.Idle()
         
@@ -259,7 +260,7 @@ if __name__ == "__main__":
             viewer = trajoptpy.GetViewer(env)
             IPython.lib.inputhook.set_inputhook(viewer.Step)
         except ImportError:
-            print "can't set IPython input hook. you won't be able to interact with plot while IPython is idling"
+            print("can't set IPython input hook. you won't be able to interact with plot while IPython is idling")
             pass
         
         

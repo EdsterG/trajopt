@@ -1,3 +1,4 @@
+from __future__ import print_statement
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--interactive", action="store_true")
@@ -84,7 +85,7 @@ if __name__ == "__main__":
     quat_targ = np.array([0,1/np.sqrt(2),1/np.sqrt(2),0]).tolist()
     request = move_arm_to_grasp(xyz_targ, quat_targ, LINK_NAME, MANIP_NAME)
     s = json.dumps(request)
-    print "REQUEST:",s
+    print("REQUEST:",s)
     trajoptpy.SetInteractive(args.interactive);
     prob = trajoptpy.ConstructProblem(s, env)
     result = trajoptpy.OptimizeProblem(prob)

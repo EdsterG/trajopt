@@ -1,3 +1,4 @@
+from __future__ import print_statement
 import trajoptpy
 import openravepy as rave
 import numpy as np
@@ -36,7 +37,7 @@ def pose_traj_request(robot, hmats):
     quats = poses[:,0:4]
     
     for i in xrange(1, n_steps-1):
-        print "waypoint xyz", xyzs[i]
+        print("waypoint xyz", xyzs[i])
         waypoint_cnt = {
             "type" : "pose",
             "name" : "waypoint_pose",
@@ -71,7 +72,7 @@ tlj = robot.GetJoint("torso_lift_joint")
 robot.SetDOFValues([tlj.GetLimits()[-1]], [tlj.GetDOFIndex()])
 
 def draw_ax(T, size, env, handles):
-    print T
+    print(T)
     p0 = T[:3,3]
     xax, yax, zax = T[:3,:3].T*size
     width = size/10.
@@ -105,7 +106,7 @@ hmats = [T_world_hinge.dot(rave.matrixFromAxisAngle([0,0,1],a)).dot(T_hinge_hand
 
 request = pose_traj_request(robot, hmats)
 s = json.dumps(request)
-print "REQUEST:",s
+print("REQUEST:",s)
 trajoptpy.SetInteractive(True);
 prob = trajoptpy.ConstructProblem(s, env)
 result = trajoptpy.OptimizeProblem(prob)

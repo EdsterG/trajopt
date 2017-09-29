@@ -109,7 +109,7 @@ robot.SetActiveDOFs(np.r_[robot.GetManipulator("rightarm").GetArmIndices(),
     
 success = False
     
-for i_try in xrange(100):
+for i_try in range(100):
     request = position_base_request(robot, LINK_NAME, XYZ_TARGET, QUAT_TARGET)
     s = json.dumps(request)
     trajoptpy.SetInteractive(args.interactive)

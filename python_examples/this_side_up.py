@@ -106,19 +106,19 @@ def dfdx(x):
 
 if args.use_cost:
 # BEGIN add_costs
-    for t in xrange(1,n_steps):    
+    for t in range(1,n_steps):    
         if args.diffmethod == "numerical":
-            prob.AddErrorCost(f, [(t,j) for j in xrange(7)], "ABS", "up%i"%t)
+            prob.AddErrorCost(f, [(t,j) for j in range(7)], "ABS", "up%i"%t)
         elif args.diffmethod == "analytic":
-            prob.AddErrorCost(f, dfdx, [(t,j) for j in xrange(7)], "ABS", "up%i"%t)
+            prob.AddErrorCost(f, dfdx, [(t,j) for j in range(7)], "ABS", "up%i"%t)
 # END add_costs
 else: #use constraint
 # BEGIN add_constraints
-    for t in xrange(1,n_steps):    
+    for t in range(1,n_steps):    
         if args.diffmethod == "numerical":
-            prob.AddConstraint(f, [(t,j) for j in xrange(7)], "EQ", "up%i"%t)
+            prob.AddConstraint(f, [(t,j) for j in range(7)], "EQ", "up%i"%t)
         elif args.diffmethod == "analytic":
-            prob.AddConstraint(f, dfdx, [(t,j) for j in xrange(7)], "EQ", "up%i"%t)
+            prob.AddConstraint(f, dfdx, [(t,j) for j in range(7)], "EQ", "up%i"%t)
 # END add_constraints
 
 result = trajoptpy.OptimizeProblem(prob) # do optimization

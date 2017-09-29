@@ -48,7 +48,7 @@ request = {
   }
 }
 
-for i in xrange(10): 
+for i in range(10): 
     t_start = time.time()
     response = server.solve_problem(sesh_key, json.dumps(request))
     print("round trip time:", time.time() - t_start)

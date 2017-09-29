@@ -43,7 +43,7 @@ if not args.dry_run: xyzrgb.save(osp.join(scene_dir,"cloud.pcd"))
 
 #clouds = []
 #grabber.startXYZ()
-#for i in xrange(10):
+#for i in range(10):
     #xyzrgb = grabber.getXYZ()
     #clouds.append(xyzrgb.to3dArray())
 #grabber.stop()

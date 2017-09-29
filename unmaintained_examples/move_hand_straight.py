@@ -62,7 +62,7 @@ def move_arm_straight_request(manip, n_steps, link_name, xyz_start, xyz_end, qua
     else:
         print("all timesteps have an ik solution")
         path_init = paths[i_best]
-    for i in xrange(1, n_steps-1):
+    for i in range(1, n_steps-1):
         print("waypoint xyz", xyzs[i])
         waypoint_term = {
             "type" : "pose",

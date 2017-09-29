@@ -7,7 +7,7 @@ from trajoptpy.cart_traj_init import shortest_paths
 def paths_thru_grid(x, start_inds, end_inds):
     ncosts_nk = 100 * (1-x)
     T = 100*(1 - (np.eye(x.shape[1]) + np.eye(x.shape[1],k=-1) + np.eye(x.shape[1],k=1)))
-    ecosts_nkk = [T for _ in xrange(len(x)-1)]
+    ecosts_nkk = [T for _ in range(len(x)-1)]
     return [path for (path,cost) in zip(*shortest_paths(ncosts_nk, ecosts_nkk)) if cost < 100]
 
 

@@ -41,7 +41,7 @@ def smooth_traj_request(robot, traj):
         ],
         "init_info" : {
             "type": "given_traj",
-            "data" : [traj.GetWaypoint(i)[:n_dof].tolist() for i in xrange(traj.GetNumWaypoints())]
+            "data" : [traj.GetWaypoint(i)[:n_dof].tolist() for i in range(traj.GetNumWaypoints())]
         }
     }
     

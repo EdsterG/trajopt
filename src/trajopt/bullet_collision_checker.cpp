@@ -43,6 +43,12 @@ ostream &operator<<(ostream &stream, const btTransform& v) {
 #pragma GCC diagnostic pop
 #endif
 
+class CollisionDispatcher : public btCollisionDispatcher {
+public:
+  CollisionDispatcher(btCollisionConfiguration* collisionConfiguration) : btCollisionDispatcher(collisionConfiguration) {}
+  void* m_userData;
+};
+
 class CollisionObjectWrapper : public btCollisionObject {
 public:
   CollisionObjectWrapper(KinBody::Link* link) : m_link(link), m_index(-1) {}
@@ -336,7 +342,7 @@ void RenderCollisionShape(btCollisionShape* shape, const btTransform& tf,
 class BulletCollisionChecker : public CollisionChecker {
   btCollisionWorld* m_world;
   btBroadphaseInterface* m_broadphase;
-  btCollisionDispatcher* m_dispatcher;
+  CollisionDispatcher* m_dispatcher;
   btCollisionConfiguration* m_coll_config;
   typedef map<const OR::KinBody::Link*, CollisionObjectWrapper*> Link2Cow;
   Link2Cow m_link2cow;
@@ -443,7 +449,7 @@ struct CollisionCollector : public btCollisionWorld::ContactResultCallback {
 // only used for AllVsAll
 void nearCallback(btBroadphasePair& collisionPair,
     btCollisionDispatcher& dispatcher, const btDispatcherInfo& dispatchInfo) {
-  BulletCollisionChecker* cc = static_cast<BulletCollisionChecker*>(dispatcher.m_userData);
+  BulletCollisionChecker* cc = static_cast<BulletCollisionChecker*>(static_cast<CollisionDispatcher&>(dispatcher).m_userData);
   if ( cc->CanCollide(static_cast<CollisionObjectWrapper*>(collisionPair.m_pProxy0->m_clientObject),
                       static_cast<CollisionObjectWrapper*>(collisionPair.m_pProxy1->m_clientObject)))
     dispatcher.defaultNearCallback(collisionPair, dispatcher, dispatchInfo);
@@ -453,7 +459,7 @@ void nearCallback(btBroadphasePair& collisionPair,
 BulletCollisionChecker::BulletCollisionChecker(OR::EnvironmentBaseConstPtr env) :
   CollisionChecker(env) {
   m_coll_config = new btDefaultCollisionConfiguration();
-  m_dispatcher = new btCollisionDispatcher(m_coll_config);
+  m_dispatcher = new CollisionDispatcher(m_coll_config);
   m_broadphase = new btDbvtBroadphase();
   m_world = new btCollisionWorld(m_dispatcher, m_broadphase, m_coll_config);
   m_dispatcher->registerCollisionCreateFunc(BOX_SHAPE_PROXYTYPE,BOX_SHAPE_PROXYTYPE,

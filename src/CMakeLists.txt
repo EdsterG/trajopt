@@ -23,7 +23,7 @@ else()
 endif()
 
 include_directories(${OSQP_INCLUDE_DIRS})
-set(OSQP_LIBRARIES osqpdirstatic)
+set(OSQP_LIBRARIES osqpstatic)
 set(OSQP_FOUND 1)
 
 include_directories(${QPOASES_INCLUDE_DIRS})

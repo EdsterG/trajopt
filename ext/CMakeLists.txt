@@ -2,6 +2,7 @@
 add_subdirectory(gtest)
 add_subdirectory(json)
 set(DLONG OFF CACHE BOOL "Build OSQP without long integers for indexing")
+set(ENABLE_MKL_PARDISO OFF CACHE BOOL "Build OSQP without Pardiso")
 add_subdirectory(osqp)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)  # -fPIC, otherwise building with qpOASES fails
 add_subdirectory(qpOASES)

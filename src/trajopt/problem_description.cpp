@@ -237,7 +237,7 @@ TrajOptResultPtr OptimizeProblem(TrajOptProbPtr prob, bool plot) {
   return TrajOptResultPtr(new TrajOptResult(opt.results(), *prob));
 }
 
-TrajOptProbPtr ConstructProblem(const ProblemConstructionInfo& pci) {
+TrajOptProbPtr ConstructProblem(ProblemConstructionInfo& pci) {
 
   const BasicInfo& bi = pci.basic_info;
   int n_steps = bi.n_steps;
@@ -249,7 +249,9 @@ TrajOptProbPtr ConstructProblem(const ProblemConstructionInfo& pci) {
 
   if (bi.start_fixed) {
     if (pci.init_info.data.rows() > 0 && !allClose(toVectorXd(cur_dofvals), pci.init_info.data.row(0))) {
-      PRINT_AND_THROW( "robot dof values don't match initialization. I don't know what you want me to use for the dof values");
+      // PRINT_AND_THROW( "robot dof values don't match initialization. I don't know what you want me to use for the dof values");
+      LOG_WARN("Robot DOF values don't match initialization. Ignoring initialization and using robot DOF values!");
+      pci.init_info.data.row(0) = toVectorXd(cur_dofvals);
     }
     for (int j=0; j < n_dof; ++j) {
       prob->addLinearConstraint(exprSub(AffExpr(prob->m_traj_vars(0,j)), cur_dofvals[j]), EQ);

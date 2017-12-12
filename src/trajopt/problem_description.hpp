@@ -25,7 +25,7 @@ struct ProblemConstructionInfo;
 struct TrajOptResult;
 typedef boost::shared_ptr<TrajOptResult> TrajOptResultPtr;
 
-TrajOptProbPtr TRAJOPT_API ConstructProblem(const ProblemConstructionInfo&);
+TrajOptProbPtr TRAJOPT_API ConstructProblem(ProblemConstructionInfo&);
 TrajOptProbPtr TRAJOPT_API ConstructProblem(const Json::Value&, OpenRAVE::EnvironmentBasePtr env);
 TrajOptResultPtr TRAJOPT_API OptimizeProblem(TrajOptProbPtr, bool plot);
 
@@ -69,7 +69,7 @@ public:
 
   TrajPlotterPtr GetPlotter() {return m_trajplotter;}
 
-  friend TrajOptProbPtr ConstructProblem(const ProblemConstructionInfo&);
+  friend TrajOptProbPtr ConstructProblem(ProblemConstructionInfo&);
 
 private:
   VarArray m_traj_vars;

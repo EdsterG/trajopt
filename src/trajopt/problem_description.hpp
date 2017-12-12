@@ -81,6 +81,7 @@ private:
 void TRAJOPT_API SetupPlotting(TrajOptProb& prob, Optimizer& opt);
 
 struct TRAJOPT_API TrajOptResult {
+  string opt_status;
   vector<string> cost_names, cnt_names;
   vector<double> cost_vals, cnt_viols;
   TrajArray traj;

@@ -202,6 +202,7 @@ void ProblemConstructionInfo::fromJson(const Value& v) {
 }
 
 TrajOptResult::TrajOptResult(OptResults& opt, TrajOptProb& prob) :
+  opt_status(statusToString(opt.status)),
   cost_vals(opt.cost_vals),
   cnt_viols(opt.cnt_viols) {
   BOOST_FOREACH(const CostPtr& cost, prob.getCosts()) {

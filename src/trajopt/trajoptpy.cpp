@@ -249,6 +249,9 @@ public:
     std::sort(m_result->colsContinuous.begin(), m_result->colsContinuous.end(), compareCollisions);
     return toPyList(m_result->colsContinuous);
   }
+  string GetOptStatus() {
+    return m_result->opt_status;
+  }
   py::object __str__() {
     return GetCosts().attr("__str__")() + GetConstraints().attr("__str__")();
   }
@@ -614,6 +617,7 @@ BOOST_PYTHON_MODULE(ctrajoptpy) {
       .def("GetConstraints", &PyTrajOptResult::GetConstraints)
       .def("GetTraj", &PyTrajOptResult::GetTraj)
       .def("GetCollisions", &PyTrajOptResult::GetCollisions)
+      .def("GetOptStatus", &PyTrajOptResult::GetOptStatus)
       .def("__str__", &PyTrajOptResult::__str__)
       ;
 

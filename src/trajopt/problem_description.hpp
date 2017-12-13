@@ -236,6 +236,21 @@ struct JointVelConstraintInfo : public TermInfo, public MakesConstraint {
 };
 
 /**
+\brief Joint-space acceleration squared
+
+\f{align*}{
+  cost = \sum_{t=0}^{T-2} \sum_j c_j (2*x_{t+1,j} - x_{t+2,j} - x_{t,j})^2
+\f}
+where j indexes over DOF, and \f$c_j\f$ are the coeffs.
+*/
+struct JointAccCostInfo : public TermInfo, public MakesCost {
+  DblVec coeffs;
+  void fromJson(const Value& v);
+  void hatch(TrajOptProb& prob);
+  DEFINE_CREATE(JointAccCostInfo)
+};
+
+/**
 \brief %Collision penalty
 
 Distrete-time penalty:

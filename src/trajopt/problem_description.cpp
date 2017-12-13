@@ -46,6 +46,7 @@ void RegisterMakers() {
   TermInfo::RegisterMaker("pose", &PoseCostInfo::create);
   TermInfo::RegisterMaker("joint_pos", &JointPosCostInfo::create);
   TermInfo::RegisterMaker("joint_vel", &JointVelCostInfo::create);
+  TermInfo::RegisterMaker("joint_acc", &JointAccCostInfo::create);
   TermInfo::RegisterMaker("collision", &CollisionCostInfo::create);
 
   TermInfo::RegisterMaker("joint", &JointConstraintInfo::create);
@@ -477,6 +478,27 @@ void JointVelConstraintInfo::hatch(TrajOptProb& prob) {
     }
   }
 }
+
+
+void JointAccCostInfo::fromJson(const Value& v) {
+  FAIL_IF_FALSE(v.isMember("params"));
+  const Value& params = v["params"];
+
+  childFromJson(params, coeffs,"coeffs");
+  int n_dof = gPCI->rad->GetDOF();
+  if (coeffs.size() == 1) coeffs = DblVec(n_dof, coeffs[0]);
+  else if (coeffs.size() != n_dof) {
+    PRINT_AND_THROW( boost::format("wrong number of coeffs. expected %i got %i")%n_dof%coeffs.size());
+  }
+  
+  const char* all_fields[] = {"coeffs"};
+  ensure_only_members(params, all_fields, sizeof(all_fields)/sizeof(char*));
+}
+void JointAccCostInfo::hatch(TrajOptProb& prob) {
+  prob.addCost(CostPtr(new JointAccCost(prob.GetVars(), toVectorXd(coeffs))));
+  prob.getCosts().back()->setName(name);
+}
+
 
 void CollisionCostInfo::fromJson(const Value& v) {
   FAIL_IF_FALSE(v.isMember("params"));

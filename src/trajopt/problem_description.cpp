@@ -374,13 +374,14 @@ void PoseCostInfo::hatch(TrajOptProb& prob) {
 
 void JointPosCostInfo::fromJson(const Value& v) {
   FAIL_IF_FALSE(v.isMember("params"));
-  int n_steps = gPCI->basic_info.n_steps;
   const Value& params = v["params"];
   childFromJson(params, vals, "vals");
   childFromJson(params, coeffs, "coeffs");
-  if (coeffs.size() == 1) coeffs = DblVec(n_steps, coeffs[0]);
-
   int n_dof = gPCI->rad->GetDOF();
+  if (coeffs.size() == 1) coeffs = DblVec(n_dof, coeffs[0]);
+  else if (coeffs.size() != n_dof) {
+    PRINT_AND_THROW( boost::format("wrong number of coeffs. expected %i got %i")%n_dof%coeffs.size());
+  }
   if (vals.size() != n_dof) {
     PRINT_AND_THROW( boost::format("wrong number of dof vals. expected %i got %i")%n_dof%vals.size());
   }

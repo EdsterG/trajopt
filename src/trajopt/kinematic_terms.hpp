@@ -84,6 +84,25 @@ public:
 };
 #endif
 
+struct CartXYZLimitJacCalculator : MatrixOfVector {
+  ConfigurationPtr manip_;
+  KinBody::LinkPtr link_;
+  Vector3d xyz_min_, xyz_max_;
+  CartXYZLimitJacCalculator(ConfigurationPtr manip, KinBody::LinkPtr link, DblVec& xyz_min, DblVec& xyz_max) :
+    manip_(manip), link_(link), xyz_min_(xyz_min.data()), xyz_max_(xyz_max.data()) {}
+
+  MatrixXd operator()(const VectorXd& dof_vals) const;
+};
+
+struct CartXYZLimitCalculator : VectorOfVector {
+  ConfigurationPtr manip_;
+  KinBody::LinkPtr link_;
+  Vector3d xyz_min_, xyz_max_;
+  CartXYZLimitCalculator(ConfigurationPtr manip, KinBody::LinkPtr link, DblVec& xyz_min, DblVec& xyz_max) :
+    manip_(manip), link_(link), xyz_min_(xyz_min.data()), xyz_max_(xyz_max.data()) {}
+
+  VectorXd operator()(const VectorXd& dof_vals) const;
+};
 
 
 }

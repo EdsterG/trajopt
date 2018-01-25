@@ -213,6 +213,21 @@ struct CartVelCntInfo : public TermInfo, public MakesConstraint {
 };
 
 /**
+ \brief Cartesian position cost/constraint on link
+
+ Constraints the XYZ position of the link to be between xyz_min and xyz_max
+ */
+struct CartXYZLimitInfo : public TermInfo, public MakesCost, public MakesConstraint {
+  int first_step, last_step;
+  KinBody::LinkPtr link;
+  DblVec xyz_min, xyz_max;
+  DblVec coeffs;
+  void fromJson(const Value& v);
+  void hatch(TrajOptProb& prob);
+  DEFINE_CREATE(CartXYZLimitInfo)
+};
+
+/**
 \brief Joint-space velocity squared
 
 \f{align*}{

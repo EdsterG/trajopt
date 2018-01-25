@@ -51,6 +51,7 @@ void RegisterMakers() {
 
   TermInfo::RegisterMaker("joint", &JointConstraintInfo::create);
   TermInfo::RegisterMaker("cart_vel", &CartVelCntInfo::create);
+  TermInfo::RegisterMaker("cart_link_limits", &CartXYZLimitInfo::create);
   TermInfo::RegisterMaker("joint_vel_limits", &JointVelConstraintInfo::create);
 
   gRegisteredMakers = true;
@@ -429,6 +430,50 @@ void CartVelCntInfo::hatch(TrajOptProb& prob) {
       VectorOfVectorPtr(new CartVelCalculator(prob.GetRAD(), link, max_displacement)),
        MatrixOfVectorPtr(new CartVelJacCalculator(prob.GetRAD(), link, max_displacement)), 
       concat(prob.GetVarRow(iStep), prob.GetVarRow(iStep+1)), VectorXd::Ones(0), INEQ, "CartVel")));     
+  }
+}
+
+void CartXYZLimitInfo::fromJson(const Value& v) {
+  FAIL_IF_FALSE(v.isMember("params"));
+  const Value& params = v["params"];
+  childFromJson(params, first_step, "first_step");
+  childFromJson(params, last_step, "last_step");
+  childFromJson(params, xyz_min, "xyz_min");
+  childFromJson(params, xyz_max, "xyz_max");
+
+  FAIL_IF_FALSE((first_step >= 0) && (first_step < gPCI->basic_info.n_steps));
+  FAIL_IF_FALSE((last_step >= first_step) && (last_step < gPCI->basic_info.n_steps));
+
+  childFromJson(params, coeffs, "coeffs");
+  int n_terms = last_step - first_step + 1;
+  if (coeffs.size() == 1) coeffs = DblVec(n_terms, coeffs[0]);
+  else if (coeffs.size() != n_terms) {
+    PRINT_AND_THROW (boost::format("wrong size: coeffs. expected %i got %i")%n_terms%coeffs.size());
+  }
+
+  string linkstr;
+  childFromJson(params, linkstr, "link");
+  link = gPCI->rad->GetRobot()->GetLink(linkstr);
+  if (!link) {
+    PRINT_AND_THROW( boost::format("invalid link name: %s")%linkstr);
+  }
+
+  const char* all_fields[] = {"first_step", "last_step", "xyz_min", "xyz_max", "link"};
+  ensure_only_members(params, all_fields, sizeof(all_fields)/sizeof(char*));
+
+
+}
+
+void CartXYZLimitInfo::hatch(TrajOptProb& prob) {
+  VectorOfVectorPtr f(new CartXYZLimitCalculator(prob.GetRAD(), link, xyz_min, xyz_max));
+  MatrixOfVectorPtr dfdx(new CartXYZLimitJacCalculator(prob.GetRAD(), link, xyz_min, xyz_max));
+  for (int i = first_step; i <= last_step; ++i) {
+    if (term_type == TT_COST) {
+      prob.addCost(CostPtr(new CostFromErrFunc(f, dfdx, prob.GetVarRow(i), coeffs[i-first_step], HINGE, (boost::format("%s_%i")%name%i).str())));
+    }
+    else if (term_type == TT_CNT) {
+      prob.addConstraint(ConstraintPtr(new ConstraintFromFunc(f, dfdx, prob.GetVarRow(i), coeffs[i-first_step], INEQ, (boost::format("%s_%i")%name%i).str())));
+    }
   }
 }
 

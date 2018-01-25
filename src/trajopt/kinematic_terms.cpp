@@ -168,4 +168,26 @@ struct UpErrorCalculator {
   }
 };
 #endif
+
+MatrixXd CartXYZLimitJacCalculator::operator()(const VectorXd& dof_vals) const {
+  int n_dof = manip_->GetDOF();
+  manip_->SetDOFValues(toDblVec(dof_vals));
+  OR::Transform pose = link_->GetTransform();
+  MatrixXd jac = manip_->PositionJacobian(link_->GetIndex(), pose.trans);
+  MatrixXd out(6,n_dof);
+  out.block(0,0,3,n_dof) = -jac;
+  out.block(3,0,3,n_dof) = jac;
+  return out;
+}
+
+VectorXd CartXYZLimitCalculator::operator()(const VectorXd& dof_vals) const {
+  manip_->SetDOFValues(toDblVec(dof_vals));
+  OR::Transform pose = link_->GetTransform();
+  VectorXd out(6);
+  out.topRows(3) = toVector3d((OR::Vector(xyz_min_(0),xyz_min_(1),xyz_min_(2)) - pose.trans));
+  out.bottomRows(3) = toVector3d((pose.trans - OR::Vector(xyz_max_(0),xyz_max_(1),xyz_max_(2))));
+  return out;
+}
+
+
 }

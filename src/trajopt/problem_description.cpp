@@ -458,7 +458,7 @@ void CartXYZLimitInfo::fromJson(const Value& v) {
     PRINT_AND_THROW( boost::format("invalid link name: %s")%linkstr);
   }
 
-  const char* all_fields[] = {"first_step", "last_step", "xyz_min", "xyz_max", "link"};
+  const char* all_fields[] = {"coeffs", "first_step", "last_step", "xyz_min", "xyz_max", "link"};
   ensure_only_members(params, all_fields, sizeof(all_fields)/sizeof(char*));
 
 

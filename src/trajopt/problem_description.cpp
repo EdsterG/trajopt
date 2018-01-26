@@ -469,10 +469,10 @@ void CartXYZLimitInfo::hatch(TrajOptProb& prob) {
   MatrixOfVectorPtr dfdx(new CartXYZLimitJacCalculator(prob.GetRAD(), link, xyz_min, xyz_max));
   for (int i = first_step; i <= last_step; ++i) {
     if (term_type == TT_COST) {
-      prob.addCost(CostPtr(new CostFromErrFunc(f, dfdx, prob.GetVarRow(i), Vector1d(coeffs[i-first_step]), HINGE, (boost::format("%s_%i")%name%i).str())));
+      prob.addCost(CostPtr(new CostFromErrFunc(f, dfdx, prob.GetVarRow(i), VectorXd::Ones(6)*coeffs[i-first_step], HINGE, (boost::format("%s_%i")%name%i).str())));
     }
     else if (term_type == TT_CNT) {
-      prob.addConstraint(ConstraintPtr(new ConstraintFromFunc(f, dfdx, prob.GetVarRow(i), Vector1d(coeffs[i-first_step]), INEQ, (boost::format("%s_%i")%name%i).str())));
+      prob.addConstraint(ConstraintPtr(new ConstraintFromFunc(f, dfdx, prob.GetVarRow(i), VectorXd::Ones(6)*coeffs[i-first_step], INEQ, (boost::format("%s_%i")%name%i).str())));
     }
   }
 }

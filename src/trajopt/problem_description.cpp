@@ -52,6 +52,7 @@ void RegisterMakers() {
   TermInfo::RegisterMaker("joint", &JointConstraintInfo::create);
   TermInfo::RegisterMaker("cart_vel", &CartVelCntInfo::create);
   TermInfo::RegisterMaker("cart_xyz_limits", &CartXYZLimitInfo::create);
+  TermInfo::RegisterMaker("pol_xy_limits", &PolarXYLimitInfo::create);
   TermInfo::RegisterMaker("joint_vel_limits", &JointVelConstraintInfo::create);
 
   gRegisteredMakers = true;
@@ -473,6 +474,50 @@ void CartXYZLimitInfo::hatch(TrajOptProb& prob) {
     }
     else if (term_type == TT_CNT) {
       prob.addConstraint(ConstraintPtr(new ConstraintFromFunc(f, dfdx, prob.GetVarRow(i), VectorXd::Ones(6)*coeffs[i-first_step], INEQ, (boost::format("%s_%i")%name%i).str())));
+    }
+  }
+}
+
+void PolarXYLimitInfo::fromJson(const Value& v) {
+  FAIL_IF_FALSE(v.isMember("params"));
+  const Value& params = v["params"];
+  childFromJson(params, first_step, "first_step");
+  childFromJson(params, last_step, "last_step");
+  childFromJson(params, radius_limits, "radius_limits");
+  childFromJson(params, angle_limits, "angle_limits");
+
+  FAIL_IF_FALSE((first_step >= 0) && (first_step < gPCI->basic_info.n_steps));
+  FAIL_IF_FALSE((last_step >= first_step) && (last_step < gPCI->basic_info.n_steps));
+
+  childFromJson(params, coeffs, "coeffs");
+  int n_terms = last_step - first_step + 1;
+  if (coeffs.size() == 1) coeffs = DblVec(n_terms, coeffs[0]);
+  else if (coeffs.size() != n_terms) {
+    PRINT_AND_THROW (boost::format("wrong size: coeffs. expected %i got %i")%n_terms%coeffs.size());
+  }
+
+  string linkstr;
+  childFromJson(params, linkstr, "link");
+  link = gPCI->rad->GetRobot()->GetLink(linkstr);
+  if (!link) {
+    PRINT_AND_THROW( boost::format("invalid link name: %s")%linkstr);
+  }
+
+  const char* all_fields[] = {"coeffs", "first_step", "last_step", "radius_limits", "angle_limits", "link"};
+  ensure_only_members(params, all_fields, sizeof(all_fields)/sizeof(char*));
+
+
+}
+
+void PolarXYLimitInfo::hatch(TrajOptProb& prob) {
+  VectorOfVectorPtr f(new PolarXYLimitCalculator(prob.GetRAD(), link, radius_limits[0], radius_limits[1], angle_limits[0], angle_limits[1]));
+  MatrixOfVectorPtr dfdx(new PolarXYLimitJacCalculator(prob.GetRAD(), link, radius_limits[0], radius_limits[1], angle_limits[0], angle_limits[1]));
+  for (int i = first_step; i <= last_step; ++i) {
+    if (term_type == TT_COST) {
+      prob.addCost(CostPtr(new CostFromErrFunc(f, dfdx, prob.GetVarRow(i), VectorXd::Ones(4)*coeffs[i-first_step], HINGE, (boost::format("%s_%i")%name%i).str())));
+    }
+    else if (term_type == TT_CNT) {
+      prob.addConstraint(ConstraintPtr(new ConstraintFromFunc(f, dfdx, prob.GetVarRow(i), VectorXd::Ones(4)*coeffs[i-first_step], INEQ, (boost::format("%s_%i")%name%i).str())));
     }
   }
 }

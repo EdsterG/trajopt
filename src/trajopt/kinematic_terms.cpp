@@ -7,6 +7,7 @@
 #include "utils/eigen_slicing.hpp"
 #include "utils/logging.hpp"
 #include "utils/stl_to_string.hpp"
+#include "utils/math.hpp"
 #include <boost/bind.hpp>
 #include <boost/format.hpp>
 #include <Eigen/Geometry>
@@ -186,6 +187,42 @@ VectorXd CartXYZLimitCalculator::operator()(const VectorXd& dof_vals) const {
   VectorXd out(6);
   out.topRows(3) = toVector3d((OR::Vector(xyz_min_(0),xyz_min_(1),xyz_min_(2)) - pose.trans));
   out.bottomRows(3) = toVector3d((pose.trans - OR::Vector(xyz_max_(0),xyz_max_(1),xyz_max_(2))));
+  return out;
+}
+
+MatrixXd PolarXYLimitJacCalculator::operator()(const VectorXd& dof_vals) const {
+  int n_dof = manip_->GetDOF();
+  manip_->SetDOFValues(toDblVec(dof_vals));
+  OR::Transform pose = link_->GetTransform();
+  MatrixXd jac = manip_->PositionJacobian(link_->GetIndex(), pose.trans);
+  MatrixXd derivative(2, 3);
+  double rho = sqrt(pose.trans.x * pose.trans.x + pose.trans.y * pose.trans.y);
+  double phi = atan2(pose.trans.y, pose.trans.x);
+  derivative(0,0) = pose.trans.x/rho;
+  derivative(0,1) = pose.trans.y/rho;
+  derivative(0,2) = 0;
+  derivative(1,0) = -pose.trans.y/(rho * rho);
+  derivative(1,1) = pose.trans.x/(rho * rho);
+  derivative(1,2) = 0;
+  MatrixXd out(4,n_dof);
+  out.block(0,0,2,n_dof) = -derivative*jac;
+  out.block(2,0,2,n_dof) = derivative*jac;
+  return out;
+}
+
+VectorXd PolarXYLimitCalculator::operator()(const VectorXd& dof_vals) const {
+  manip_->SetDOFValues(toDblVec(dof_vals));
+  OR::Transform pose = link_->GetTransform();
+  VectorXd out(4);
+  double rho = sqrt(pose.trans.x * pose.trans.x + pose.trans.y * pose.trans.y);
+  double phi = atan2(pose.trans.y, pose.trans.x);
+
+  double angle_dist_lower = abs(min_angle_diff(angle_min_, phi));
+  double angle_dist_upper = abs(min_angle_diff(phi, angle_max_));
+  phi += 2*M_PI * (phi < angle_min_ && angle_dist_upper < angle_dist_lower);
+  phi -= 2*M_PI * (phi > angle_max_ && angle_dist_lower < angle_dist_upper);
+  out.topRows(2) = Vector2d(radius_min_ - rho, angle_min_ - phi);
+  out.bottomRows(2) = Vector2d(rho - radius_max_, phi - angle_max_);
   return out;
 }
 

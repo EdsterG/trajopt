@@ -104,5 +104,33 @@ struct CartXYZLimitCalculator : VectorOfVector {
   VectorXd operator()(const VectorXd& dof_vals) const;
 };
 
+struct PolarXYLimitJacCalculator : MatrixOfVector {
+  ConfigurationPtr manip_;
+  KinBody::LinkPtr link_;
+  double radius_min_, radius_max_, angle_min_, angle_max_;
+  PolarXYLimitJacCalculator(ConfigurationPtr manip, KinBody::LinkPtr link, double radius_min, double radius_max, double angle_min, double angle_max) :
+    manip_(manip), link_(link), radius_min_(radius_min), radius_max_(radius_max), angle_min_(angle_min), angle_max_(angle_max) {}
+
+  MatrixXd operator()(const VectorXd& dof_vals) const;
+};
+
+struct PolarXYLimitCalculator : VectorOfVector {
+  ConfigurationPtr manip_;
+  KinBody::LinkPtr link_;
+  double radius_min_, radius_max_, angle_min_, angle_max_;
+  PolarXYLimitCalculator(ConfigurationPtr manip, KinBody::LinkPtr link, double radius_min, double radius_max, double angle_min, double angle_max) :
+    manip_(manip), link_(link), radius_min_(radius_min), radius_max_(radius_max), angle_min_(angle_min), angle_max_(angle_max) {
+      FAIL_IF_FALSE(angle_min_ >= -M_PI && angle_min_ <= M_PI);
+      FAIL_IF_FALSE(angle_max_ >= -M_PI && angle_max_ <= M_PI);
+      FAIL_IF_FALSE(angle_max_ == angle_max_);
+      if (angle_max_ < angle_min_) {
+        angle_max_ += 2*M_PI;
+        FAIL_IF_FALSE(angle_max_ == angle_max_);
+      }
+    }
+
+  VectorXd operator()(const VectorXd& dof_vals) const;
+};
+
 
 }

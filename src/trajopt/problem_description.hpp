@@ -228,6 +228,21 @@ struct CartXYZLimitInfo : public TermInfo, public MakesCost, public MakesConstra
 };
 
 /**
+ \brief XY plane polar cost/constraint on link
+
+ Constraints the position of the link on the XY plane to be between min/max radius and min/max angle
+ */
+struct PolarXYLimitInfo : public TermInfo, public MakesCost, public MakesConstraint {
+  int first_step, last_step;
+  KinBody::LinkPtr link;
+  DblVec radius_limits, angle_limits;
+  DblVec coeffs;
+  void fromJson(const Value& v);
+  void hatch(TrajOptProb& prob);
+  DEFINE_CREATE(PolarXYLimitInfo)
+};
+
+/**
 \brief Joint-space velocity squared
 
 \f{align*}{

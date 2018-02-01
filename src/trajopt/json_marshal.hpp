@@ -4,6 +4,7 @@
 #include <boost/format.hpp>
 #include <string>
 #include <sstream>
+#include <iostream>
 #include "macros.h"
 
 

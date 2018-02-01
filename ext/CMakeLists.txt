@@ -1,6 +1,5 @@
 #add_subdirectory(bullet)
 add_subdirectory(gtest)
-add_subdirectory(json)
 set(DLONG OFF CACHE BOOL "Build OSQP without long integers for indexing")
 set(ENABLE_MKL_PARDISO OFF CACHE BOOL "Build OSQP without Pardiso")
 add_subdirectory(osqp)

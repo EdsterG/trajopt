@@ -26,7 +26,7 @@ add_library(trajopt
 	plot_callback.cpp
 	bullet_unity.cpp
 )
-target_link_libraries(trajopt ${OpenRAVE_BOTH_LIBRARIES} ${Boost_SYSTEM_LIBRARY} sco utils json osgviewer)
+target_link_libraries(trajopt ${OpenRAVE_BOTH_LIBRARIES} ${Boost_SYSTEM_LIBRARY} sco utils jsoncpp osgviewer)
 
 add_subdirectory(test)
 

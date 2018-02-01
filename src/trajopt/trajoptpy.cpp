@@ -169,9 +169,13 @@ void PyTrajOptProb::AddErrCost2(py::object f, py::object dfdx, py::list ijs, con
 
 Json::Value readJsonFile(const std::string& doc) {
   Json::Value root;
-  Json::Reader reader;
-  bool success = reader.parse(doc, root);
-  if (!success) throw openrave_exception("couldn't parse string as json");
+  JSONCPP_STRING errs;
+  Json::CharReaderBuilder builder;
+  builder.settings_["allowSpecialFloats"] = true;
+  Json::CharReader* reader(builder.newCharReader());
+  bool success = reader->parse(doc.c_str(), doc.c_str() + doc.size(), &root, &errs);
+  delete reader;
+  if (!success) throw std::runtime_error(std::string("couldn't parse string as json... \n") + errs);
   return root;
 }
 

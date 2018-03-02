@@ -27,7 +27,7 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(JSON REQUIRED jsoncpp)
 find_package(OpenRAVE REQUIRED)
 find_package(Boost COMPONENTS system thread program_options REQUIRED)
-find_pacakge(OpenSceneGraph REQUIRED OpenThreads osg osgDB osgGA osgText osgUtil osgViewer)
+find_package(OpenSceneGraph REQUIRED OpenThreads osg osgDB osgGA osgText osgUtil osgViewer)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)

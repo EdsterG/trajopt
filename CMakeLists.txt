@@ -25,6 +25,7 @@ endif()
 find_package(Eigen REQUIRED)
 find_package(OpenRAVE REQUIRED)
 find_package(Boost COMPONENTS system thread program_options REQUIRED)
+find_package(OpenSceneGraph REQUIRED OpenThreads osg osgDB osgGA osgText osgUtil osgViewer)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
